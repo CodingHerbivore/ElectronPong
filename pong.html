@@ -1,0 +1,99 @@
+<!-- Pull in p5.js graphics library -->
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"
+  integrity="sha512-WIklPM6qPCIp6d3fSSr90j+1unQHUOoWDS4sdTiR8gxUTnyZ8S2Mr8e10sKKJ/bhJgpAa/qG068RDkg6fIlNFA=="
+  crossorigin="anonymous"
+></script>
+<script>
+    const screenDim = 500;
+    let score = [0, 0];
+    let ball = { x: 250, y: 100, vx: 2, vy: 2 };
+    let play1 = { x: 30, y: 250, height: 100, width: 20 };
+    let play2 = { x: screenDim - 50, y: 250, height: 100, width: 20 };
+
+    // Runs at startup
+    function setup() {
+        frameRate(100);
+        createCanvas(screenDim, screenDim);
+    }
+
+    // Runs on loop according to framerate
+    function draw() {
+        fill("transparent");
+        // Draw the box around our game
+        rect(0, 0, screenDim, screenDim);
+        
+        // Show score
+        fill("black");
+        textSize(32);
+        text(score[0] + " - " + score[1], screenDim / 2 - 40, 100);
+
+        // Draw ball
+        fill("red");
+        ellipse(ball.x, ball.y, 10, 10);
+
+        // Draw paddles
+        fill("black");
+        rect(play1.x, play1.y, play1.width, play1.height);
+        rect(play2.x, play2.y, play2.width, play2.height);
+
+        // Bounce off top and bottom
+        if (ball.y > screenDim - 10 || ball.y < 10) {
+            ball.vy *= -1;
+        }
+
+        // Intersecting with paddle 1
+        if (
+            ball.x > play1.x + play1.width + 10 &&
+            ball.y > play1.y &&
+            ball.y < play1.y + play1.height
+        ) {
+            ball.vx *= -1.1; // Invert and increase speed by 10%
+            ball.vy = random(8) - 4;
+        }
+        
+        // Intersecting with paddle 2
+        if (
+            ball.x > play2.x - 10 &&
+            ball.y > play2.y &&
+            ball.y < play2.y + play2.height
+        ) {
+            ball.vx *= -1.1; // Invert and increase speed by 10%
+            ball.vy = random(8) - 4;
+        }
+
+        // Move Paddles
+        if (keyIsDown(87) && play1.y > 5) {
+            play1.y -= 4;
+        }
+
+        if (keyIsDown(83) && play1.y < screenDim - play1.height) {
+            play1.y += 4;
+        }
+
+        if (keyIsDown(UP_ARROW) && play2.y > 5) {
+            play2.y -= 4;
+        }
+
+        if (keyIsDown(DOWN_ARROW) && play2.y < screenDim - play1.height) {
+            play2.y += 4;
+        }
+
+        // Update score
+        if (ball.x < 0) {
+            score[1] += 1;
+            ball = { x: 250, y: 100, vx: 2, vy: 2 };
+        }
+        if (ball.x > screenDim) {
+            score[0] += 1;
+            ball = { x: 250, y: 100, vx: -2, vy: 2 };
+        }
+
+
+        // Move the ball
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+
+    }
+</script>
